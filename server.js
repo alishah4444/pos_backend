@@ -15,6 +15,17 @@ const dbKey = `mongodb+srv://alishahdsu:Admin123@cluster0.f5kbbga.mongodb.net/no
 
 // const httpsServer = https.createServer(httpsCredentials, applicationServer);
 
+mongoose
+	.connect(dbKey)
+	.then((result) => {
+		httpServer.listen(PORT);
+		console.log('success');
+	})
+	.catch((err) => {
+		console.log(err);
+		console.log('failed');
+	});
+
 applicationServer.get('/test-user', (req, res) => {
 	let user = new User({
 		username: 'admin@gmail.com',
@@ -28,13 +39,8 @@ applicationServer.get('/test-user', (req, res) => {
 		.catch((err) => res.send(err));
 });
 
-mongoose
-	.connect(dbKey)
-	.then((result) => {
-		httpServer.listen(PORT);
-		console.log('success');
-	})
-	.catch((err) => {
-		console.log(err);
-		console.log('failed');
+applicationServer.get('/get-user', (req, res) => {
+	User.find((err, users) => {
+		!err ? res.send(users) : res.send({ err: 'error' });
 	});
+});
